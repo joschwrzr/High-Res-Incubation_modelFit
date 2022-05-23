@@ -1,3 +1,9 @@
+
+# This code is supplement to: J. Schwarzer et al. A theoretical model for CO2 fluxes of accurate incubation measurements, in prep.
+# further information: https://ghg-in-permafrost.awi.de/
+
+
+
 #setwd()
 
 library(ggplot2) #library for plotting
@@ -10,6 +16,7 @@ library(minpack.lm) # library for least squares fit using levenberg-marquart alg
 # variables names ---------------------------------------------------------------
 
 # SOC = degradable Soil organic Carbon in mol/l
+#       for the model the SOC is simplified to organic Carbon in the volume of the aqueous phase
 # Caq = CO2 in Water phase of the soil sample in mol/l
 # Cgas = CO2 in gas headspace in mol/l
 # k1 = rate constant for microbial degradation
@@ -60,14 +67,16 @@ colnames(df) <- c("CO2_moll", "time")
 dfg = df %>% gather(species, conc, -time)
 
 
-# have a look at the concentration developement measured:
-ggplot(data=dfg, aes(x=time, y=conc, color=species)) + geom_point(size=1)
+# have a look at the concentration development measured:
+ggplot(data=dfg, aes(x=time, y=conc, color=species)) +
+  geom_point(size=1) +
+  labs(x = "time [s]", y= bquote(~CO[2]~"[mol/l]"))
 
 
 
 # kinetic model --------------------------------------------------------------------
 
-# rxnrate- function with a set of three ODE that describe the system:
+# rxnrate- function with a set of three ODEs that describe the system:
 
 # c - concentration of species SOC, Caq and Cgas
 # t - time
@@ -182,7 +191,8 @@ outdf=data.frame(out[,c(1,3,4)])
 ggplot()+
   geom_point(data=df, aes(x=time, y=CO2_moll, color="measured"),size=1)+
   geom_line(data=outdf, aes(x=time, y = Cgas, color="modelled"))+
-  scale_color_manual(name = "CO2 in gasphase", values = c("measured" = "#F8766D", "modelled" = "#00BFC4"))
+  scale_color_manual(name = bquote(~CO[2]~"in gasphase"), values = c("measured" = "#F8766D", "modelled" = "#00BFC4"))+
+  labs(x = "time [s]", y= bquote(~CO[2]~"[mol/l]"))
 
 # linear model -------------------
 
@@ -193,13 +203,36 @@ thrd <- l/3
 # linear model for last third of measurement
 lin <- lm(CO2_moll~time, data = df[(l-thrd):l,])
 # save coefficients into list of fits
-lin$coefficients[1] # inercept
+lin$coefficients[1] # intercept
 lin$coefficients[2] # slope
+
+# add correction factor from analytic solution
+corr <- 1+ (Vw/(Vg*KH))
+lin$coefficients[2] * corr
 
 
                            
 # plot linear fit of the last third         
 ggplot()+
-  geom_point(data=df, aes(x=time, y=CO2_moll),color="#CC7987", size=1)+
-  geom_abline(intercept = lin$coefficients[1], slope = lin$coefficients[2], color="#A8DEC8", lwd=1.2)
+  geom_point(data=df, aes(x=time, y=CO2_moll),color="#CC7987", size=1.5)+
+  geom_abline(intercept = lin$coefficients[1], slope = lin$coefficients[2],
+              color="#A8DEC8", lwd=1.2)+
+  geom_abline(intercept = lin$coefficients[1], slope = lin$coefficients[2]*corr, 
+              color="#425BCE", lwd=1.2, linetype="dashed")+
+  labs(x = "time [s]", y= bquote(~CO[2]~"[mol/l]"))
+
+ggplot()+
+  geom_point(data=df, aes(x=time, y=CO2_moll,color="measured"), size=1.5)+
+  geom_abline(aes(color="linear regression", 
+                  intercept = lin$coefficients[1], slope = lin$coefficients[2]),
+              size=1.5)+
+  geom_abline(aes(color="corrected linear regression",
+                  intercept = lin$coefficients[1], slope = lin$coefficients[2]*corr),
+              size=1.5, linetype="dashed")+
+  labs(x = "time [s]", y= bquote(~CO[2]~"[mol/l]"))+
+  scale_color_manual(name='',
+                     breaks=c('measured', 'linear regression', 'corrected linear regression'),
+                     values=c('measured'='#CC7987', 'linear regression'='#A8DEC8', 'corrected linear regression'='#425BCE'))
+
+
 
