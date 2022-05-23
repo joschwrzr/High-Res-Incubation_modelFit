@@ -58,8 +58,12 @@ Vw <- 0.018 # [l]
 
 # get the data --------------------------------------------------------------
 df <- read.csv('./day01_01')
+# to convert ppm to mol/l use the general Gas law,
+# (df$CO2_ppm *1e-6 *101325) / (R *(293.15) *1000)
 
 # subset df for time vector and CO2 concentration in mol/l
+
+
 df <- df %>% select(CO2_moll, DiffTime)
 colnames(df) <- c("CO2_moll", "time")
 
