@@ -58,7 +58,8 @@ Vw <- 0.018 # [l]
 
 # get the data --------------------------------------------------------------
 df <- read.csv('./day01_01')
-# to convert ppm to mol/l use the general Gas law,
+
+# to convert ppm to mol/l use the Ideal Gas law, PV = nRT
 # (df$CO2_ppm *1e-6 *101325) / (R *(293.15) *1000)
 
 # subset df for time vector and CO2 concentration in mol/l
@@ -202,11 +203,11 @@ ggplot()+
 
 # measurement length 
 l <- length(df$time)
-# a third of ther measurement length
+# a third of the measurement length
 thrd <- l/3
 # linear model for last third of measurement
 lin <- lm(CO2_moll~time, data = df[(l-thrd):l,])
-# save coefficients into list of fits
+# print coefficients into list of fits
 lin$coefficients[1] # intercept
 lin$coefficients[2] # slope
 
