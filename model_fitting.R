@@ -53,7 +53,7 @@ KH =round( (KH * 0.001 * 101325) / (R*Temp), 3)
 Vg = 0.22 # [l]
 # Water volume of measurement set up
 Vw <- 0.018 # [l]
-
+# Sample dry weight [g]
 
 
 # get the data --------------------------------------------------------------
@@ -209,13 +209,14 @@ thrd <- l/3
 # linear model for last third of measurement
 lin <- lm(CO2_moll~time, data = df[(l-thrd):l,])
 # print coefficients into list of fits
-lin$coefficients[1] # intercept
-lin$coefficients[2] # slope
+lin$coefficients[1] # intercept (ADD UNITS HERE!)
+lin$coefficients[2] # slope (ADD UNITS HERE!)
+print(paste('Linear flux =', lin$coefficients[2]  / sampleWT, 'UNITS', sep=''))
 
 # add correction factor from analytic solution
 corr <- 1+ (Vw/(Vg*KH))
-lin$coefficients[2] * corr
-
+lin$coefficients[2] * corr #(ADD UNITS HERE!)
+print(paste('Correction factor flux =', lin$coefficients[2] * corr / sampleWT, 'UNITS', sep=''))
 
                            
 # plot linear fit of the last third         
