@@ -158,7 +158,7 @@ ssq=function(fitparms, df){
   preddf = outdf %>% gather(species, conc, -time)
   expdf = df %>% gather(species, conc, -time)
   
-  ssqres=preddf$conc-expdf$conc
+  ssqres=(preddf$conc-expdf$conc)^2
   
   # return predicted vs experimental residual
   return(ssqres)
