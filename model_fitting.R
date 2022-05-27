@@ -128,7 +128,7 @@ ggplot()+
 
 # parameter fitting----------------------------------------------------------
 
-# ssq - function to calculate residuals of model vs. measured data 
+# ssq - function to calculate residuals of model vs. measured data using sum of squares
 
 # fitparams - parameters to be estimated: k1, kh1 and the 3 initial concentrations of SOC, Caq, and Cgas
 # df - dataframe containing experimental data
