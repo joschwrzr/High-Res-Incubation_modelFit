@@ -128,7 +128,8 @@ ggplot()+
 
 # parameter fitting----------------------------------------------------------
 
-# ssq - function to calculate residuals of model vs. measured data using sum of squares
+# ssq - function to calculate residuals of model vs. measured data to use in
+# nls.lm model fit; actual sum of squares taken by nls.lm function
 
 # fitparams - parameters to be estimated: k1, kh1 and the 3 initial concentrations of SOC, Caq, and Cgas
 # df - dataframe containing experimental data
@@ -158,7 +159,7 @@ ssq=function(fitparms, df){
   preddf = outdf %>% gather(species, conc, -time)
   expdf = df %>% gather(species, conc, -time)
   
-  ssqres=(preddf$conc-expdf$conc)^2
+  ssqres=preddf$conc-expdf$conc
   
   # return predicted vs experimental residual
   return(ssqres)
