@@ -103,7 +103,7 @@ rxnrate=function(t,c,parms){
 }
 
 
-
+### Here you could explain why you want to do this? To demonstrate that it works?
 # run the model with some made up values for initial concentrations and rate constants:
 # start values for initial concentrations
 cinit <- c(SOC=1,Caq=0.75e-06,Cgas=5e-05)
@@ -128,7 +128,7 @@ ggplot()+
 
 # parameter fitting----------------------------------------------------------
 
-# ssq - function to calculate residuals of model vs. measured data
+# ssq - function to calculate residuals of model vs. measured data 
 
 # fitparams - parameters to be estimated: k1, kh1 and the 3 initial concentrations of SOC, Caq, and Cgas
 # df - dataframe containing experimental data
